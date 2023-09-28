@@ -1,0 +1,41 @@
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from geopy.distance import great_circle
+from .serializers import BookingSummarySerializer
+from .models import BookingSummary
+
+class CalculateDistanceAndPriceView(APIView):
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({'error': 'User not authenticated'}, status=401)
+
+        serializer = BookingSummarySerializer(data=request.data)
+
+        if serializer.is_valid():
+            # ... (rest of the code remains the same)
+
+            try:
+                # ... (rest of the code remains the same)
+
+                # Create a new instance of BookingSummary
+                booking_summary = BookingSummary.objects.create(
+                    user=request.user,  # Assuming you have user authentication
+                    user_location=serializer.validated_data.get('user_location'),
+                    destination=serializer.validated_data.get('destination'),
+                    two_way=serializer.validated_data.get('two_way'),
+                    no_of_passengers=no_of_passengers,
+                    pickup_long=pickup_long,
+                    pickup_lat=pickup_lat,
+                    dest_long=dest_long,
+                    dest_lat=dest_lat,
+                    distance=distance,
+                    price=price
+                )
+
+                return Response({'distance': distance, 'price': int(price)})
+
+            except Exception as e:
+                return Response({'error': str(e)}, status=400)
+        else:
+            return Response(serializer.errors, status=400)
