@@ -7,7 +7,7 @@ from .serializers import BookingSummarySerializer
 from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsAuthorToViewReceipt
+#from .permissions import IsAuthorToViewReceipt
 
 from geopy.distance import geodesic
 
@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, IsAuthorToViewReceipt])
+@permission_classes([IsAuthenticated])
 def create_booking(request):
     def calculate_total_price(base_price, distance, passengers):
         # function calculate total price based on base price, distance, and number of passengers
@@ -79,7 +79,7 @@ def create_booking(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated, IsAuthorToViewReceipt])
+@permission_classes([IsAuthenticated])
 def BookingReceipt(request, pk):
     if request.method == 'GET':
         try:

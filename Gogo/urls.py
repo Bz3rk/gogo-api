@@ -10,9 +10,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('Testimonials.urls')),
     path('api/', include('booking_summary.urls')),
-    path('login/', views.ClientLogin, name='login'),
-    path('loginw/', views.LoginView, name='loginw'),
-    path('register/', views.Register, name='register'),
+    path('api/client/login/', views.ClientLogin),
+    path('api/driver/login/', views.DriverLogin),
+    path('api/client-register/', views.ClientRegister),
+    path('api/driver-register/', views.DriverRegister),
     path('docs/', include_docs_urls(title = 'GogoApi')),
     path('schema', get_schema_view(
         title="Gogo",

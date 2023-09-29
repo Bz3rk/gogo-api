@@ -15,4 +15,7 @@ class BookingSummary (models.Model):
     dest_lat = models.FloatField()
     distance = models.FloatField()
     price = models.IntegerField()
+
+    def __str__(self):
+        return self.user.username
    

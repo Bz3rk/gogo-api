@@ -3,20 +3,18 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
-from .serializers import ClientDataSerializer
-from .models import ClientDataStore
+from .serializers import DataSerializer, ClientRegistrationSerializer, DriverRegistrationSerializer
 
 # Create your views here.
 @api_view(['GET', 'POST'])
 def ClientLogin(request):
     if request.method == 'GET':
         client = User.objects.all()
-        serializer = ClientDataSerializer(client, many=True)
+        serializer = DataSerializer(client, many=True)
     if request.method == 'POST':
-        serializer = ClientDataSerializer(data=request.data)
+        serializer = DataSerializer(data=request.data)
         
         if serializer.is_valid():
             serializer.save()
@@ -30,6 +28,27 @@ def ClientLogin(request):
     print(request.data.get('username'))
     return Response({'userData': serializer.data, 'token': token[0].key}, status=status.HTTP_200_OK)
 
+@api_view(['GET', 'POST'])
+def DriverLogin(request):
+    if request.method == 'GET':
+        client = User.objects.all()
+        serializer = DataSerializer(client, many=True)
+    if request.method == 'POST':
+        serializer = DataSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+
+    #username = request.data.get('username')
+    user = User.objects.get(username=request.user)
+    if user.DoesNotExist():
+        pass
+    
+    token = Token.objects.get_or_create(user=user)
+    print(request.data.get('username'))
+    return Response({'userData': serializer.data, 'token': token[0].key}, status=status.HTTP_200_OK)
+
+
 def LoginView(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -41,15 +60,30 @@ def LoginView(request):
         
     return render(request, 'login.html')
 
-def Register(request):
+@api_view(['POST', 'GET'])
+def ClientRegister(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        email = request.POST.get('email')
+        serializer = ClientRegistrationSerializer(data = request.data)
+        serializer.save()
 
-        data = User.objects.create(username=username, password=password, first_name=firstname, last_name=lastname, email=email)
-        
-        data.save()
-    return render(request, 'register.html')
+    if request.method == 'GET':
+        form = User.objects.all()
+        serializer = ClientRegistrationSerializer(form, many=True)
+    
+    user = User.objects.get(username=request.user)
+    token = Token.objects.get_or_create(user=user)
+    return Response({'userData': serializer.data, 'token':token[0].key}, status=status.HTTP_201_CREATED)
+
+@api_view(['POST', 'GET'])
+def DriverRegister(request):
+    if request.method == 'POST':
+        serializer = DriverRegistrationSerializer(data = request.data)
+        serializer.save()
+
+    if request.method == 'GET':
+        form = User.objects.all()
+        serializer = DriverRegistrationSerializer(form, many=True)
+    
+    user = User.objects.get(username=request.user)
+    token = Token.objects.get_or_create(user=user)
+    return Response({'userData': serializer.data, 'token':token[0].key}, status=status.HTTP_201_CREATED)
