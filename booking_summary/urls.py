@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import BookingReceipt, BookingSummary
+from .views import BookingReceipt, create_booking
 
 
 urlpatterns = [
-    path('bookings/create', BookingSummary, name ='bookings-create'),
+    path('bookings/create', create_booking, name ='bookings-create'),
     path('bookings/<int:pk>', BookingReceipt, name = 'bookings-receipt'),
 ]

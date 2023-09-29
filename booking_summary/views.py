@@ -9,97 +9,69 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthorOrAdminOrReadOnly
 
-#from geopy.distance import geodesic
+from geopy.distance import geodesic
 
 from rest_framework.views import APIView
 #from geopy.distance import great_circle
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
-def BookingSummary(request,*args, **kwargs):
+def create_booking(request):
+    def calculate_total_price(base_price, distance, passengers):
+        # function calculate total price based on base price, distance, and number of passengers
+        return round(base_price * distance * passengers)
+
     if request.method == 'POST':
-        serializer = BookingSummarySerializer(data=request.data)
-        if serializer.is_valid():
-            pickup_long = float(request.data.get('pickup_long'))
-            pickup_lat = float(request.data.get('pickup_lat'))
-            dest_long = float(request.data.get('dest_long'))
-            dest_lat = float(request.data.get('dest_lat'))
-            no_of_passengers = int(request.data.get('no_of_passengers'))
+        data = request.data
+        longitude = data.get('pickup_long')
+        latitude = data.get('pickup_lat')
+        destination_longitude = data.get('dest_long')
+        destination_latitude = data.get('dest_lat')
+        passengers = data.get('no_of_passengers')
+        two_way = data.get('two_way')
+
+        if longitude is not None and latitude is not None and passengers is not None:
+            try:
+                pickup_location = (float(latitude), float(longitude))
+                destination = (float(destination_latitude), float(destination_longitude))
+            except ValueError:
+                return Response({'message': 'Invalid longitude or latitude format'}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                cal_distance = geodesic(pickup_location, destination).kilometers
+                distance = round(cal_distance, 2)
+            except Exception as e:
+                return Response({'message': f'Error calculating distance: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+            base_price = 500  # Set a default base price of 500
 
 
-            pickup_location = (pickup_long, pickup_lat)
-            destination_location = (dest_long, dest_lat)
-            distance = geodesic(pickup_location, destination_location).km
+            if two_way is True:
+                price = (calculate_total_price(base_price, distance, passengers) * 2)
+            else:
+                price = calculate_total_price(base_price, distance, passengers)
+                
+            print(price)
             print(distance)
 
-            base_price = 500
-            price = round(base_price * distance * no_of_passengers)
-            serializer.save(
-                pickup_long=pickup_long,
-                pickup_lat=pickup_lat,
-                dest_long=dest_long,
-                dest_lat=dest_lat,
-                no_of_passengers=no_of_passengers,
-                distance=distance,
-                price=price
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer = BookingSummarySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(
+                    distance=distance,
+                    price=price,
+                    user = request.user
+                )
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'message': 'Longitude, latitude, and passengers are required'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+    return Response({'message': 'Method not allowed. Use POST to create a booking.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+ 
 
-
-# class BookingSummary(APIView):
-#     def post(self, request):
-#         serializer = BookingSummarySerializer(data=request.data)
-
-#         if serializer.is_valid():
-#             # Assuming you're sending the required data in the request body.
-#             # You can access it using serializer.validated_data
-#             pickup_long = serializer.validated_data.get('pickup_long')
-#             pickup_lat = serializer.validated_data.get('pickup_lat')
-#             dest_long = serializer.validated_data.get('dest_long')
-#             dest_lat = serializer.validated_data.get('dest_lat')
-#             no_of_passengers = serializer.validated_data.get('no_of_passengers')
-
-#             try:
-#                 # Convert coordinates to tuples
-#                 pickup_coords = (pickup_lat, pickup_long)
-#                 dest_coords = (dest_lat, dest_long)
-                
-#                 # Calculate distance
-#                 distance = great_circle(pickup_coords, dest_coords).km
-
-#                 # Assuming you've calculated the distance, now calculate the price
-#                 base_price = 500
-#                 price = round(base_price * distance * no_of_passengers)
-
-#                 # Set the calculated values to the serializer
-#                 serializer.validated_data['distance'] = distance
-#                 serializer.validated_data['price'] = price
-
-#                 # Create a new instance of BookingSummary
-#                 booking_summary = BookingSummary.objects.create(
-#                     user=request.user,  # Assuming you have user authentication
-#                     user_location=serializer.validated_data.get('user_location'),
-#                     destination=serializer.validated_data.get('destination'),
-#                     two_way=serializer.validated_data.get('two_way'),
-#                     no_of_passengers=no_of_passengers,
-#                     pickup_long=pickup_long,
-#                     pickup_lat=pickup_lat,
-#                     dest_long=dest_long,
-#                     dest_lat=dest_lat,
-#                     distance=distance,
-#                     price=price
-#                 )
-
-#                 return Response({'distance': distance, 'price': int(price)})
-
-#             except Exception as e:
-#                 return Response({'error': str(e)}, status=400)
-#         else:
-#             return Response(serializer.errors, status=400)
 
 
 
@@ -110,6 +82,7 @@ def BookingSummary(request,*args, **kwargs):
 def BookingReceipt(request, pk):
     if request.method == 'GET':
         data = BookingSummary.objects.get(pk=pk)
-        serializer = BookingSummarySerializers(data)
+        serializer = BookingSummarySerializer(data)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 

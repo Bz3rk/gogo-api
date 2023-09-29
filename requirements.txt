@@ -1,0 +1,7 @@
+django == 4.2.5
+djangorestframework
+pyyaml
+uritemplate
+coreapi
+requests
+django-cors-headers
