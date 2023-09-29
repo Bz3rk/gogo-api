@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com']
 
 
 # Application definition
