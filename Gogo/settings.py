@@ -87,10 +87,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gogodatabase',
         'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a',
-        'USERNAME': 'gogouser',
+        'USER': 'gogouser',
         'PASSWORD': '2KemeBHLfxNG0jP6GVgPgpTN9ua6Dx6M',
         'PORT': '5432',
-    }
+    } 
 }
 
 
