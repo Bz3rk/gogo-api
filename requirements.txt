@@ -1,7 +1,7 @@
 asgiref==3.7.2
 coreapi==2.3.3
 coreschema==0.0.4
-Django==4.2.5
+Django
 django-cors-headers==4.2.0
 djangorestframework==3.14.0
 geopy==2.4.0
