@@ -5,3 +5,5 @@ uritemplate
 coreapi
 requests
 django-cors-headers
+whitenoise == 6.5.0
+pillow

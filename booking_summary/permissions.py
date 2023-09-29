@@ -1,11 +1,6 @@
 from rest_framework import permissions
 
-class IsAuthorOrAdminOrReadOnly(permissions.BasePermission):
+class IsAuthorToViewReceipt(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        
-        if request.user and request.user.is_superuser:
-            return True
-        
-        return obj.author == request.user
+        # Checks if the user is the author of the booking summary.
+        return obj.user == request.user

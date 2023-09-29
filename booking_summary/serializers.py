@@ -3,6 +3,7 @@ from .models import BookingSummary
 
 
 class BookingSummarySerializer (serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     distance = serializers.FloatField(read_only=True)
     price = serializers.IntegerField(read_only=True)
     

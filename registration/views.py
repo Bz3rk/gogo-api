@@ -24,7 +24,7 @@ def ClientLogin(request):
     #username = request.data.get('username')
     user = User.objects.get(username=request.user)
     if user.DoesNotExist():
-        print('Not Found')
+        pass
     
     token = Token.objects.get_or_create(user=user)
     print(request.data.get('username'))

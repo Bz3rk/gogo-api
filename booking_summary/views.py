@@ -3,11 +3,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import BookingSummary
 from .serializers import BookingSummarySerializer
-from rest_framework import generics
+#from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsAuthorOrAdminOrReadOnly
+from .permissions import IsAuthorToViewReceipt
 
 from geopy.distance import geodesic
 
@@ -15,8 +15,8 @@ from rest_framework.views import APIView
 #from geopy.distance import great_circle
 
 
-@api_view(['POST', 'GET'])
-@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAuthorToViewReceipt])
 def create_booking(request):
     def calculate_total_price(base_price, distance, passengers):
         # function calculate total price based on base price, distance, and number of passengers
@@ -55,17 +55,18 @@ def create_booking(request):
             print(price)
             print(distance)
 
+            user = request.user 
             serializer = BookingSummarySerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(
                     distance=distance,
                     price=price,
-                    user = request.user
+                    user = user
                 )
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'message': 'Longitude, latitude, and passengers are required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'user_location, destination, two_way, no_of_passengers, pickup_long, pickup_lat, dest_long, dest_lat are required'}, status=status.HTTP_400_BAD_REQUEST)
 
 
     return Response({'message': 'Method not allowed. Use POST to create a booking.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -78,11 +79,12 @@ def create_booking(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated, IsAuthorOrAdminOrReadOnly])
+@permission_classes([IsAuthenticated, IsAuthorToViewReceipt])
 def BookingReceipt(request, pk):
     if request.method == 'GET':
-        data = BookingSummary.objects.get(pk=pk)
+        try:
+            data = BookingSummary.objects.get(pk=pk)
+        except BookingSummary.DoesNotExist:
+            return Response({'message': 'Booking Receipt not found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = BookingSummarySerializer(data)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+        return Response(serializer.data, status=status.HTTP_200_OK)
