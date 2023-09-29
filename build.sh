@@ -1,8 +1,8 @@
 pip install coreapi
 pip install coreschema
 pip install Django
-pip django-cors-headers
-pip djangorestframework
+pip install django-cors-headers
+pip install djangorestframework
 pip install geopy
 pip install gunicorn
 pip install Pillow
