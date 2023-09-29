@@ -1,10 +1,17 @@
-django == 4.2.5
-djangorestframework
-pyyaml
-uritemplate
-coreapi
-requests
-django-cors-headers
-whitenoise == 6.5.0
-pillow
-gunicorn
+asgiref==3.7.2
+coreapi==2.3.3
+coreschema==0.0.4
+Django==4.2.5
+django-cors-headers==4.2.0
+djangorestframework==3.14.0
+geopy==2.4.0
+gunicorn==21.2.0
+Pillow==10.0.1
+psycopg2-binary==2.9.7
+pytz==2023.3.post1
+PyYAML==6.0.1
+requests==2.31.0
+sqlparse==0.4.4
+typing_extensions==4.8.0
+tzdata==2023.3
+whitenoise==6.5.0
