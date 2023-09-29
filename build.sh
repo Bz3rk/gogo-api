@@ -1,3 +1,4 @@
+pip install asgiref
 pip install coreapi
 pip install coreschema
 pip install Django
@@ -6,7 +7,13 @@ pip install djangorestframework
 pip install geopy
 pip install gunicorn
 pip install Pillow
+pip install psycopg2-binary
+pip install pytz
 pip install PyYAML
+pip install requests
+pip install sqlparse
+pip install typing_extensions
+pip install tzdata
 pip install whitenoise
 python manage.py makemigrations
 python manage.py migrate
