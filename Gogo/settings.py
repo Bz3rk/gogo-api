@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com']
+ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com', '127.0.0.1']
 
 
 # Application definition
@@ -44,10 +44,13 @@ INSTALLED_APPS = [
     'registration',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -86,10 +89,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gogodatabase',
-        'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a',
+        'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a.oregon-postgres.render.com',
         'USER': 'gogouser',
         'PASSWORD': '2KemeBHLfxNG0jP6GVgPgpTN9ua6Dx6M',
         'PORT': '5432',
+        # 'ENGINE': 'django.db.backends.sqlite3', 
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     } 
 }
 
@@ -110,6 +115,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://*',
 ]
 
 

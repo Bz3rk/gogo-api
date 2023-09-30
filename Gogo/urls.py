@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/driver/login/', views.DriverLogin),
     path('api/client-register/', views.ClientRegister),
     path('api/driver-register/', views.DriverRegister),
+    path('api/auth/', views.test_token),
     path('docs/', include_docs_urls(title = 'GogoApi')),
     path('schema', get_schema_view(
         title="Gogo",

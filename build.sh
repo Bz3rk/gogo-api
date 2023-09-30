@@ -15,6 +15,7 @@ pip install sqlparse
 pip install typing_extensions
 pip install tzdata
 pip install whitenoise
+pip install django-cors-headers
 python manage.py makemigrations
 python manage.py migrate
 python manage.py makemigrations Testimonials
