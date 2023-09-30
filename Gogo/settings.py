@@ -120,10 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173/',
-    'https://gogo-rides-test.onrender.com/'
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization
