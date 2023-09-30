@@ -1,3 +1,4 @@
+pip install --upgrade pip
 pip install asgiref
 pip install coreapi
 pip install coreschema
