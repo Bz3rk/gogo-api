@@ -17,3 +17,5 @@ pip install tzdata
 pip install whitenoise
 python manage.py makemigrations
 python manage.py migrate
+python manage.py makemigrations Testimonials
+python manage.py migrate Testimonials
