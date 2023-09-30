@@ -121,9 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    '*'
     # 'http://localhost:5173',
-    # 'https://gogo-rides-test.onrender.com'
+     'gogo-rides-test.onrender.com'
 ]
 
 
