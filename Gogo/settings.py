@@ -129,6 +129,16 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+CORS_ALLOWED_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+
 
 
 # Internationalization
