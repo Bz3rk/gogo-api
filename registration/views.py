@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, require_GET
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
 from .serializers import DataSerializer, ClientRegistrationSerializer, DriverRegistrationSerializer
