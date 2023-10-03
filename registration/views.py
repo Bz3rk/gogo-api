@@ -63,4 +63,4 @@ def DriverRegister(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
-    return Response(f'passed for {request.user.email}')
+    return Response({"success":True})
