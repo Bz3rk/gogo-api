@@ -62,5 +62,15 @@ def DriverRegister(request):
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@require_GET
 def test_token(request):
-    return Response(f'passed for {request.user.email}')
+    response = JsonResponse(
+        "User authenticated."
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    response["Access-Control-Max-Age"] = "1000"
+    response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+    response["Access-Control-Allow-Credentials"] = true
+    return response
+    # return Response(f'passed for {request.user.email}')
