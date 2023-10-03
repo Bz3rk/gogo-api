@@ -60,7 +60,7 @@ def DriverRegister(request):
     return Response({})
 
 @api_view(['GET', 'POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
     return Response(f'passed for {request.user.email}')
