@@ -25,13 +25,7 @@ def create_booking(request):
     if request.method == 'POST':
         data = request.data
         # checks if the required fields are inputted
-        required_fields = ['pickup_long', 'pickup_lat', 'dest_long', 'dest_lat', 'no_of_passengers']
-
-        for field in required_fields:
-            if field not in data:
-                 return Response({'message': f'{field.replace("_", " ").capitalize()} is required'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({'message':'User location, destinaton are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
                 
         longitude = data.get('pickup_long')
         latitude = data.get('pickup_lat')
@@ -39,6 +33,15 @@ def create_booking(request):
         destination_latitude = data.get('dest_lat')
         passengers = data.get('no_of_passengers')   
         two_way = data.get('two_way')
+        user_location = data.get('user_location')
+        destination = data.get('destination')
+
+       # checkes if each field is provided
+        required_fields = ['user_location','destination','pickup_long', 'pickup_lat', 'dest_long', 'dest_lat', 'no_of_passengers', 'two_way']
+
+        for field in required_fields:
+            if field not in data:
+                return Response({'message': f'{field.replace("_", " ").capitalize()} is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         if longitude is not None and latitude is not None and passengers is not None and destination_latitude is not None and destination_latitude is not None:
             try:
@@ -75,8 +78,8 @@ def create_booking(request):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            # return Response({'message': 'user_location, destination, two_way, no_of_passengers, pickup_long, pickup_lat, dest_long, dest_lat are required'}, status=status.HTTP_400_BAD_REQUEST)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'user_location, destination, two_way, no_of_passengers, pickup_long, pickup_lat, dest_long, dest_lat are required'}, status=status.HTTP_400_BAD_REQUEST)
+            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     return Response({'message': 'Method not allowed. Use POST to create a booking.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -90,11 +93,11 @@ def create_booking(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def BookingReceipt(request, pk):
+def BookingReceipt(request, user_id):
     if request.method == 'GET':
         try:
-            data = BookingSummary.objects.get(pk=pk)
+            data = BookingSummary.objects.filter(user_id=user_id)
         except BookingSummary.DoesNotExist:
             return Response({'message': 'Booking Receipt not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = BookingSummarySerializer(data)
+        serializer = BookingSummarySerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
