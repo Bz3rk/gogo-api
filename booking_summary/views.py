@@ -32,8 +32,7 @@ def create_booking(request):
                  return Response({'message': f'{field.replace("_", " ").capitalize()} is required'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'message':'User location, destinaton are required'}, status=status.HTTP_400_BAD_REQUEST)
-
-        longitude = data.get('pickup_long')
+                
         longitude = data.get('pickup_long')
         latitude = data.get('pickup_lat')
         destination_longitude = data.get('dest_long')
