@@ -101,7 +101,7 @@ def BookingReceipt(request, user_id):
 
             if str(user.id) != user_id:
                 return Response({'message': 'Unauthorized access'}, status=status.HTTP_401_UNAUTHORIZED)
-            data = user.bookingsummary_set.filter(user_id=user_id).order_by('-created_at')
+            data = user.bookingsummary_set.filter(user_id=user_id).order_by('-id')
             serializer = BookingSummarySerializer(data=data, many=True)
             if serializer.is_valid():
                 data = serializer.data
