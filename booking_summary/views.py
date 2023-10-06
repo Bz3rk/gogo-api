@@ -91,13 +91,34 @@ def create_booking(request):
 
 
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def BookingReceipt(request, user_id):
     if request.method == 'GET':
         try:
-            data = BookingSummary.objects.filter(user_id=user_id)
+            user = request.user 
+
+            if str(user.id) != user_id:
+                return Response({'message': 'Unauthorized access'}, status=status.HTTP_401_UNAUTHORIZED)
+            data = user.bookingsummary_set.filter(user_id=user_id).order_by('-created_at')
+            serializer = BookingSummarySerializer(data=data, many=True)
+            if serializer.is_valid():
+                data = serializer.data
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except BookingSummary.DoesNotExist:
             return Response({'message': 'Booking Receipt not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = BookingSummarySerializer(data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def BookingReceipt(request, user_id):
+#     if request.method == 'GET':
+#         try:
+#             user = request.user 
+#             data = user.BookingSummary_set.filter(user_id=user_id)
+#         except BookingSummary.DoesNotExist:
+#             return Response({'message': 'Booking Receipt not found'}, status=status.HTTP_404_NOT_FOUND)
+#         serializer = BookingSummarySerializer(data, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)

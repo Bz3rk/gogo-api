@@ -15,6 +15,7 @@ class BookingSummary (models.Model):
     dest_lat = models.FloatField()
     distance = models.FloatField()
     price = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
