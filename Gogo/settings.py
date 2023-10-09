@@ -127,7 +127,8 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://gogo-rides-test.onrender.com",
-    "http://192.168.0.184:5173"
+    "http://192.168.0.184:5173",
+    "https://testing-gogo.netlify.app"
 ]
 
 
