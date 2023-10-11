@@ -9,9 +9,9 @@ class DataSerializer(serializers.ModelSerializer):
 class ClientRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email']
+        fields = ['id', 'password', 'first_name', 'last_name', 'email']
 
 class DriverRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email']
+        fields = ['id', 'password', 'first_name', 'last_name', 'email']
