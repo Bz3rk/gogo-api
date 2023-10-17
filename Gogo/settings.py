@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
- DEBUG = os.environ.get('DEBUG')
+DEBUG = os.environ.get('DEBUG')
 
 #ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com']
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
