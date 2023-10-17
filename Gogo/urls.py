@@ -1,9 +1,11 @@
-
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.schemas import get_schema_view
-from rest_framework.documentation import include_docs_urls
 from registration import views
+
+#The docs view
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+
 
 
 urlpatterns = [
@@ -15,10 +17,8 @@ urlpatterns = [
     path('api/client-register/', views.ClientRegister),
     path('api/driver-register/', views.DriverRegister),
     path('api/auth/', views.test_token),
-    path('docs/', include_docs_urls(title = 'GogoApi')),
-    path('schema', get_schema_view(
-        title="Gogo",
-        description="Api for Gogo",
-        version="1.0.0"
-    ), name='openapi-schema'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
+
+

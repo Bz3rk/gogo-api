@@ -1,10 +1,12 @@
 pip install --upgrade pip
 pip install asgiref
 pip install coreapi
-pip install coreschema
 pip install Django
 pip install django-cors-headers
 pip install djangorestframework
+pip install django-rest-swagger
+pip install drf-yasg
+pip install drf-spectacular
 pip install geopy
 pip install gunicorn
 pip install Pillow
@@ -17,7 +19,6 @@ pip install typing_extensions
 pip install tzdata
 pip install whitenoise
 pip install django-cors-headers
+python manage.py spectacular --file schema.yml
 python manage.py makemigrations
 python manage.py migrate
-python manage.py makemigrations Testimonials
-python manage.py migrate Testimonials

@@ -6,7 +6,8 @@ class BookingSummarySerializer (serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     distance = serializers.FloatField(read_only=True)
     price = serializers.IntegerField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
     
     class Meta:
         model = BookingSummary
-        fields = ['user', 'user_location', 'destination', 'two_way', 'no_of_passengers', 'pickup_long', 'pickup_lat', 'dest_long', 'dest_lat', 'distance', 'price']
+        fields = ['user', 'user_location', 'destination', 'two_way', 'no_of_passengers', 'pickup_long', 'pickup_lat', 'dest_long', 'dest_lat', 'distance', 'price', 'created_at']

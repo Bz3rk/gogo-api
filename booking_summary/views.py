@@ -1,20 +1,21 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from .models import BookingSummary
 from .serializers import BookingSummarySerializer
 #from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
+from drf_spectacular.utils import extend_schema
 
 from rest_framework.permissions import IsAuthenticated
 #from .permissions import IsAuthorToViewReceipt
 
 from geopy.distance import geodesic
 
-from rest_framework.views import APIView
-#from geopy.distance import great_circle
 
 
+@extend_schema(request = BookingSummarySerializer,  responses = BookingSummarySerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_booking(request):
@@ -92,6 +93,9 @@ def create_booking(request):
 
 
 
+
+
+@extend_schema(request = BookingSummarySerializer, responses = BookingSummarySerializer)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def BookingReceipt(request, user_id):

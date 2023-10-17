@@ -10,11 +10,14 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.authtoken.models import Token
 from .serializers import DataSerializer, ClientRegistrationSerializer, DriverRegistrationSerializer
 
+from drf_spectacular.utils import extend_schema
+
 # Create your views here.
+@extend_schema(request = DataSerializer, responses = DataSerializer)
 @api_view(['GET', 'POST'])
 def ClientLogin(request):
     if request.method == 'POST':
-        user = get_object_or_404(User, username=request.data['username'])
+        user = get_object_or_404(User, username=request.data['email'])
         if not user.check_password(request.data['password']):
             return Response({"detail": "Not Found..."}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
@@ -22,10 +25,12 @@ def ClientLogin(request):
         return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
     return Response({})
 
+
+@extend_schema(request = DataSerializer, responses = DataSerializer)
 @api_view(['GET', 'POST'])
 def DriverLogin(request):
     if request.method == 'POST':
-        user = get_object_or_404(User, username=request.data['username'])
+        user = get_object_or_404(User, username=request.data['email'])
         if not user.check_password(request.data['password']):
            return Response({"detail": "Not Found..."}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
@@ -33,6 +38,8 @@ def DriverLogin(request):
         return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
     return Response({})
 
+
+@extend_schema(request = ClientRegistrationSerializer, responses = ClientRegistrationSerializer)
 @api_view(['POST', 'GET'])
 def ClientRegister(request):
     if request.method == 'POST':
@@ -40,12 +47,14 @@ def ClientRegister(request):
         if serializer.is_valid():
             password = make_password(request.data['password'])
             serializer.save()
-            user = User.objects.get(username=request.data['username'])
+            user = User.objects.get(username=request.data['first_name'])
             token = Token.objects.create(user=user)
             return Response({'userData': serializer.data, 'token': token.key})
         return Response({'Error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     return Response({})
 
+
+@extend_schema(request = DriverRegistrationSerializer, responses = DriverRegistrationSerializer)
 @api_view(['POST', 'GET'])
 def DriverRegister(request):
     if request.method == 'POST':
@@ -53,11 +62,13 @@ def DriverRegister(request):
         if serializer.is_valid():
             password = make_password(request.data['password'])
             serializer.save(password=password)
-            user = User.objects.get(username=request.data['username'])
+            user = User.objects.get(username=request.data['first_name'])
             token = Token.objects.create(user=user)
             return Response({"userData": serializer.data, "token": token.key})
         return Response({"Error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     return Response({})
+
+
 
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])

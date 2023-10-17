@@ -21,15 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp'
-# SECRET_KEY = os.environ.get('SECRET_KEY')
+#SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get('DEBUG')
+#DEBUG = True
+ DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com']
-#ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS')
+#ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com']
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
 
 # Application definition
@@ -42,14 +42,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party packages
     'corsheaders',
+    'rest_framework.authtoken',
+    'rest_framework',
+    'drf_yasg',
+    'drf_spectacular',
+   
+    # installed apps
     'Testimonials',
     'booking_summary',
-    'registration',
-    'rest_framework',
-    'rest_framework.authtoken'
- 
+    'registration', 
 ]
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'GOGO-API',
+    'DESCRIPTION': 'Your API Description',
+    'VERSION': '1.0.0',
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+    }
+}
 
 
 MIDDLEWARE = [
@@ -97,8 +111,8 @@ DATABASES = {
         'USER': 'gogouser',
         'PASSWORD': '2KemeBHLfxNG0jP6GVgPgpTN9ua6Dx6M',
         'PORT': '5432',
-    #     'ENGINE': 'django.db.backends.sqlite3', 
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+        # 'ENGINE': 'django.db.backends.sqlite3', 
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     } 
 }
 
@@ -169,6 +183,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+}
 
 
