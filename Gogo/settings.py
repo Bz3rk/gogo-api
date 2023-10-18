@@ -28,10 +28,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 #DEBUG = True
 DEBUG = os.environ.get('DEBUG')
 
-#ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com']
+#ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com', '127.0.0.1']
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
-
+AUTH_USER_MODEL = 'registration.CustomUser'
 # Application definition
 
 INSTALLED_APPS = [
@@ -108,6 +108,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gogodatabase',
         'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a',
+        #'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a.oregon-postgres.render.com',
         'USER': 'gogouser',
         'PASSWORD': '2KemeBHLfxNG0jP6GVgPgpTN9ua6Dx6M',
         'PORT': '5432',

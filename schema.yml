@@ -608,6 +608,7 @@ components:
           title: Email address
           maxLength: 254
       required:
+      - email
       - id
       - password
     Data:
@@ -625,6 +626,7 @@ components:
           type: string
           maxLength: 128
       required:
+      - email
       - id
       - password
     DriverRegistration:
@@ -648,6 +650,7 @@ components:
           title: Email address
           maxLength: 254
       required:
+      - email
       - id
       - password
     PatchedTestimonials:

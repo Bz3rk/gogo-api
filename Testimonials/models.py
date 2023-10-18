@@ -1,14 +1,13 @@
-from django.contrib.auth.models import User
 from django.db import models
-#from ..API.model import ClientRegistration
+from django.conf import settings
 
 # Create your models here.
 
 
 
-
+CustomUser = settings.AUTH_USER_MODEL
 class Testimonials(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 

@@ -1,10 +1,11 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 
+CustomUser = settings.AUTH_USER_MODEL
 
 class BookingSummary (models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     user_location = models.CharField(max_length=300)
     destination = models.CharField(max_length=300)
     two_way = models.BooleanField()
@@ -18,5 +19,5 @@ class BookingSummary (models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.first_name
    
