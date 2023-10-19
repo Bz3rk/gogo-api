@@ -27,7 +27,7 @@ def ClientLogin(request):
     if request.method == 'POST':
         user = get_object_or_404(CustomUser, email=request.data['email'])
         if not user.check_password(request.data['password']):
-            return Response({"detail": "Not Found..."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Invalid credentials..."}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
         serializer = DataSerializer(instance=user)
         return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
@@ -40,7 +40,7 @@ def DriverLogin(request):
     if request.method == 'POST':
         user = get_object_or_404(CustomUser, email=request.data['email'])
         if not user.check_password(request.data['password']):
-           return Response({"detail": "Not Found..."}, status=status.HTTP_400_BAD_REQUEST)
+           return Response({"message": "Invalid credentials...."}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
         serializer = DataSerializer(instance=user)
         return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
@@ -53,7 +53,7 @@ def ClientRegister(request):
     if request.method == 'POST':
         serializer = ClientRegistrationSerializer(data = request.data, many=False)
         if serializer.is_valid():
-            password = make_password(request.data['password'])  # Hash the password
+            password = request.data['password']
             
             user = serializer.save( password=password)
 
@@ -68,8 +68,8 @@ def ClientRegister(request):
 def DriverRegister(request):
     if request.method == 'POST':
         serializer = DriverRegistrationSerializer(data = request.data, many=False)
-        if serializer.is_valid():
-            password = make_password(request.data['password'])  # Hash the password
+        if serializer.is_valid():            
+            password = request.data['password']
             
             user = serializer.save( password=password)
 
