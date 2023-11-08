@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import BookingSummary
-from .serializers import BookingSummarySerializer
+from .models import BookingSummary, Junction, Ride, PriceTable
+from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer
 #from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from drf_spectacular.utils import extend_schema
@@ -13,12 +13,19 @@ from rest_framework.permissions import IsAuthenticated
 
 from geopy.distance import geodesic
 
+# from django.conf import settings
+
+# CustomUser = settings.AUTH_USER_MODEL
+
+from django.contrib.auth import get_user_model  # Add this import
+
+User = get_user_model() 
 
 
 @extend_schema(request = BookingSummarySerializer,  responses = BookingSummarySerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def create_booking(request):
+def createBooking(request):
     def calculate_total_price(base_price, distance, passengers):
         # function calculate total price based on base price, distance, and number of passengers
         return round(base_price * distance * passengers)
@@ -98,7 +105,7 @@ def create_booking(request):
 @extend_schema(request = BookingSummarySerializer, responses = BookingSummarySerializer)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def BookingReceipt(request, user_id):
+def bookingReceipt(request, user_id):
     if request.method == 'GET':
         try:
             user = request.user 
@@ -126,3 +133,67 @@ def BookingReceipt(request, user_id):
 #             return Response({'message': 'Booking Receipt not found'}, status=status.HTTP_404_NOT_FOUND)
 #         serializer = BookingSummarySerializer(data, many=True)
 #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def bookRide(request):
+    start_junction_name = request.data.get('start_junction')
+    end_junction_name = request.data.get('end_junction')
+    user = request.user
+
+    try:
+        start_junction = Junction.objects.get(name=start_junction_name)
+        end_junction = Junction.objects.get(name=end_junction_name)
+    except Junction.DoesNotExist:
+        return Response({'error': 'Invalid junction names'}, status=status.HTTP_400_BAD_REQUEST)
+   
+    # Fetching the price from the PriceTable function 
+    price = get_price_from_table(start_junction, end_junction)
+
+    if price is not None:
+        ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction, price=price)
+        ride.save()
+
+        serializer = RideSerializer(ride)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'error': 'Price information not available'}, status=status.HTTP_400_BAD_REQUEST)
+
+#function to determine the price from the price table
+def get_price_from_table(start_junction, end_junction):
+    try:
+        price = PriceTable.objects.get(start_junction=start_junction, end_junction=end_junction).price
+    except PriceTable.DoesNotExist:
+        #sets the price to none if price table not found
+        price = None
+   
+    return price
+
+
+
+@api_view(['GET'])
+def rideSummary(request, ride_id):
+    user = request.user
+
+    try:
+        ride = Ride.objects.get(pk=ride_id, user=user)
+        serializer = RideSerializer(ride)
+        return Response(serializer.data)
+    except Ride.DoesNotExist:
+        return Response({'error': 'Ride not found for this user'}, status=400)
+
+
+
+@api_view(['GET'])
+def junctionList(request):
+    junctions = Junction.objects.all()
+    serializer = JunctionSerializer(junctions, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def priceTableList(request):
+    prices = PriceTable.objects.all()
+    serializer = PriceTableSerializer(prices, many=True)
+    return Response(serializer.data)
