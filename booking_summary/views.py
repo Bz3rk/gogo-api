@@ -136,7 +136,9 @@ def bookingReceipt(request, user_id):
 
 
 
+@extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def bookRide(request):
     start_junction_name = request.data.get('start_junction')
     end_junction_name = request.data.get('end_junction')
@@ -172,7 +174,9 @@ def get_price_from_table(start_junction, end_junction):
 
 
 
+@extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def rideSummary(request, ride_id):
     user = request.user
 
@@ -185,6 +189,8 @@ def rideSummary(request, ride_id):
 
 
 
+@extend_schema(request = JunctionSerializer, responses = JunctionSerializer
+)
 @api_view(['GET'])
 def junctionList(request):
     junctions = Junction.objects.all()
@@ -192,6 +198,7 @@ def junctionList(request):
     return Response(serializer.data)
 
 
+@extend_schema(request = JunctionSerializer, responses = JunctionSerializer)
 @api_view(['GET'])
 def priceTableList(request):
     prices = PriceTable.objects.all()
