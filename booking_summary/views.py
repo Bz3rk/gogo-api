@@ -145,8 +145,8 @@ def bookRide(request):
     user = request.user
 
     try:
-        start_junction = Junction.objects.get(name=start_junction_name)
-        end_junction = Junction.objects.get(name=end_junction_name)
+        start_junction = Junction.objects.get(id=start_junction_name)
+        end_junction = Junction.objects.get(id=end_junction_name)
     except Junction.DoesNotExist:
         return Response({'error': 'Invalid junction names'}, status=status.HTTP_400_BAD_REQUEST)
    

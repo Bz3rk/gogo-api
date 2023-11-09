@@ -24,12 +24,12 @@ class BookingSummarySerializer (serializers.ModelSerializer):
 class JunctionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Junction
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'created', 'updated']
 
 class PriceTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = PriceTable
-        fields = ['id', 'start_junction', 'end_junction', 'price']
+        fields = ['id', 'start_junction', 'end_junction', 'price', 'created', 'updated']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,6 +40,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RideSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    start_junction = JunctionSerializer()
+    end_junction = JunctionSerializer()
     class Meta:
         model = Ride
-        fields = ['user','id', 'start_junction', 'end_junction', 'price']
+        fields = ['user','id', 'start_junction', 'end_junction', 'price', 'created']
