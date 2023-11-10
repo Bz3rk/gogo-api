@@ -571,8 +571,6 @@ components:
           type: boolean
         no_of_passengers:
           type: integer
-          maximum: 2147483647
-          minimum: -2147483648
         pickup_long:
           type: number
           format: double
