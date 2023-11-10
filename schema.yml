@@ -23,6 +23,33 @@ paths:
       responses:
         '200':
           description: No response body
+  /api/book-ride/:
+    post:
+      operationId: api_book_ride_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ride'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
   /api/bookings/{user_id}:
     get:
       operationId: api_bookings_retrieve
@@ -71,65 +98,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BookingSummary'
           description: ''
-  /api/client-register/:
-    get:
-      operationId: api_client_register_retrieve
-      tags:
-      - api
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClientRegistration'
-          description: ''
-    post:
-      operationId: api_client_register_create
-      tags:
-      - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClientRegistration'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ClientRegistration'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ClientRegistration'
-        required: true
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClientRegistration'
-          description: ''
-  /api/client/login/:
-    get:
-      operationId: api_client_login_retrieve
-      tags:
-      - api
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Data'
-          description: ''
+  /api/client-login/:
     post:
       operationId: api_client_login_create
       tags:
@@ -157,11 +126,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/Data'
           description: ''
-  /api/driver-register/:
-    get:
-      operationId: api_driver_register_retrieve
+  /api/client-register/:
+    post:
+      operationId: api_client_register_create
       tags:
       - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClientRegistration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClientRegistration'
+        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -171,8 +152,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DriverRegistration'
+                $ref: '#/components/schemas/ClientRegistration'
           description: ''
+  /api/driver-login/:
+    post:
+      operationId: api_driver_login_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Data'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Data'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Data'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Data'
+          description: ''
+  /api/driver-register/:
     post:
       operationId: api_driver_register_create
       tags:
@@ -200,9 +210,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/DriverRegistration'
           description: ''
-  /api/driver/login/:
+  /api/junction-list/:
     get:
-      operationId: api_driver_login_retrieve
+      operationId: api_junction_list_retrieve
       tags:
       - api
       security:
@@ -214,24 +224,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Data'
+                $ref: '#/components/schemas/Junction'
           description: ''
-    post:
-      operationId: api_driver_login_create
+  /api/price-table-list/:
+    get:
+      operationId: api_price_table_list_retrieve
       tags:
       - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Data'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Data'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Data'
-        required: true
       security:
       - cookieAuth: []
       - basicAuth: []
@@ -241,7 +240,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Data'
+                $ref: '#/components/schemas/Junction'
+          description: ''
+  /api/ride-summary/{ride_id}:
+    get:
+      operationId: api_ride_summary_retrieve
+      parameters:
+      - in: path
+        name: ride_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
           description: ''
   /api/schema/:
     get:
@@ -551,6 +571,8 @@ components:
           type: boolean
         no_of_passengers:
           type: integer
+          maximum: 2147483647
+          minimum: -2147483648
         pickup_long:
           type: number
           format: double
@@ -595,13 +617,13 @@ components:
           readOnly: true
         password:
           type: string
-          maxLength: 128
+          writeOnly: true
         first_name:
           type: string
-          maxLength: 150
+          maxLength: 30
         last_name:
           type: string
-          maxLength: 150
+          maxLength: 30
         email:
           type: string
           format: email
@@ -609,7 +631,9 @@ components:
           maxLength: 254
       required:
       - email
+      - first_name
       - id
+      - last_name
       - password
     Data:
       type: object
@@ -624,7 +648,10 @@ components:
           maxLength: 254
         password:
           type: string
-          maxLength: 128
+          writeOnly: true
+        first_name:
+          type: string
+          maxLength: 150
       required:
       - email
       - id
@@ -637,13 +664,13 @@ components:
           readOnly: true
         password:
           type: string
-          maxLength: 128
+          writeOnly: true
         first_name:
           type: string
-          maxLength: 150
+          maxLength: 30
         last_name:
           type: string
-          maxLength: 150
+          maxLength: 30
         email:
           type: string
           format: email
@@ -651,8 +678,32 @@ components:
           maxLength: 254
       required:
       - email
+      - first_name
       - id
+      - last_name
       - password
+    Junction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - id
+      - name
+      - updated
     PatchedTestimonials:
       type: object
       properties:
@@ -668,6 +719,33 @@ components:
           type: string
           format: date-time
           readOnly: true
+    Ride:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        id:
+          type: integer
+          readOnly: true
+        start_junction:
+          $ref: '#/components/schemas/Junction'
+        end_junction:
+          $ref: '#/components/schemas/Junction'
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - end_junction
+      - id
+      - price
+      - start_junction
+      - user
     Testimonials:
       type: object
       properties:
@@ -687,6 +765,20 @@ components:
       - author
       - body
       - created
+      - id
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
       - id
   securitySchemes:
     basicAuth:
