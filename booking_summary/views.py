@@ -139,9 +139,12 @@ def bookingReceipt(request, user_id):
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def bookRide(request):
+@api_view(['POST'])
+def book_ride(request):
     start_junction_name = request.data.get('start_junction')
     end_junction_name = request.data.get('end_junction')
+    two_way = request.data.get('two_way')
+    no_of_passengers = request.data.get('no_of_passengers')
     user = request.user
 
     try:
@@ -150,11 +153,17 @@ def bookRide(request):
     except Junction.DoesNotExist:
         return Response({'error': 'Invalid junction names'}, status=status.HTTP_400_BAD_REQUEST)
    
-    # Fetching the price from the PriceTable function 
-    price = get_price_from_table(start_junction, end_junction)
+    # Fetching the price from the PriceTable function and multiplies the no of passengers availiable 
+    price = get_price_from_table(start_junction, end_junction) * no_of_passengers
+    
+    #  checks if the ride is two way or not
+    if two_way is True:
+        final_price = price * 2
+    else:
+        final_price = price
 
-    if price is not None:
-        ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction, price=price)
+    if price is not None:   
+        ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction, price=final_price)
         ride.save()
 
         serializer = RideSerializer(ride)
@@ -164,13 +173,20 @@ def bookRide(request):
 
 #function to determine the price from the price table
 def get_price_from_table(start_junction, end_junction):
+
     try:
+        # Try to get the price for the normal order
         price = PriceTable.objects.get(start_junction=start_junction, end_junction=end_junction).price
     except PriceTable.DoesNotExist:
-        #sets the price to none if price table not found
-        price = None
-   
+        try:
+            # Try to get the price for the reverse order
+            price = PriceTable.objects.get(start_junction=end_junction, end_junction=start_junction).price
+        except PriceTable.DoesNotExist:
+            # Set the price to None if both normal and reverse orders are not found
+            price = None
+
     return price
+
 
 
 

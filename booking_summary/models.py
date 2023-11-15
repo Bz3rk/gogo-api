@@ -55,6 +55,8 @@ class Ride(models.Model):
     user = models.ForeignKey (CustomUser, on_delete=models.CASCADE)
     start_junction = models.ForeignKey(Junction, on_delete=models.SET_NULL, null=True, related_name='start_junction_rides')
     end_junction = models.ForeignKey(Junction, on_delete=models.SET_NULL, null=True, related_name='end_junction')
+    no_of_passengers = models.IntegerField(default=1)
+    two_way = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     created = models.DateTimeField(auto_now_add=True)
 

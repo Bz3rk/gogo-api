@@ -44,4 +44,4 @@ class RideSerializer(serializers.ModelSerializer):
     end_junction = JunctionSerializer()
     class Meta:
         model = Ride
-        fields = ['user','id', 'start_junction', 'end_junction', 'price', 'created']
+        fields = ['user','id', 'start_junction', 'end_junction', 'no_of_passengers', 'two_way', 'price', 'created']
