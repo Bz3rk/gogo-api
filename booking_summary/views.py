@@ -140,7 +140,7 @@ def bookingReceipt(request, user_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-def book_ride(request):
+def bookRide(request):
     start_junction_name = request.data.get('start_junction')
     end_junction_name = request.data.get('end_junction')
     two_way = request.data.get('two_way')
