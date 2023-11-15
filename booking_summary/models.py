@@ -9,7 +9,7 @@ class BookingSummary (models.Model):
     user_location = models.CharField(max_length=300)
     destination = models.CharField(max_length=300)
     two_way = models.BooleanField()
-    no_of_passengers = models.IntegerField()
+    no_of_passenger = models.IntegerField()
     pickup_long = models.FloatField()
     pickup_lat = models.FloatField()
     dest_long = models.FloatField()
