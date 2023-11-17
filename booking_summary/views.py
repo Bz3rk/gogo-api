@@ -142,8 +142,8 @@ def bookingReceipt(request, user_id):
 def bookRide(request):
     start_junction_name = request.data.get('start_junction')
     end_junction_name = request.data.get('end_junction')
-    two_way = request.data.get('two_way')
-    no_of_passengers = request.data.get('no_of_passengers')
+    two_way = request.data.get('two_way', False)
+    no_of_passengers = int(request.data.get('no_of_passengers', 1))
     user = request.user
 
     try:
@@ -153,21 +153,23 @@ def bookRide(request):
         return Response({'error': 'Invalid junction names'}, status=status.HTTP_400_BAD_REQUEST)
    
     # Fetching the price from the PriceTable function and multiplies the no of passengers availiable 
-    price = get_price_from_table(start_junction, end_junction) * no_of_passengers
+    price = get_price_from_table(start_junction, end_junction)
     
-    #  checks if the ride is two way or not
-    if two_way is True:
-        final_price = price * 2
-    else:
-        final_price = price
 
     if price is not None:   
-        ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction, price=final_price)
+        #  checks if the ride is two way or not
+        pass_price = price * no_of_passengers
+        if two_way is True:
+            final_price = pass_price * 2
+        else:
+            final_price = pass_price
+        ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction,  no_of_passengers=no_of_passengers, two_way=two_way, price=final_price,)
         ride.save()
 
         serializer = RideSerializer(ride)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
+        final_price = price
         return Response({'error': 'Price information not available'}, status=status.HTTP_400_BAD_REQUEST)
 
 #function to determine the price from the price table
