@@ -43,6 +43,7 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -240,7 +241,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Junction'
+                $ref: '#/components/schemas/PriceTable'
           description: ''
   /api/ride-summary/{ride_id}:
     get:
@@ -256,6 +257,7 @@ paths:
       security:
       - cookieAuth: []
       - basicAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -571,6 +573,8 @@ components:
           type: boolean
         no_of_passengers:
           type: integer
+          maximum: 2147483647
+          minimum: -2147483648
         pickup_long:
           type: number
           format: double
@@ -717,6 +721,35 @@ components:
           type: string
           format: date-time
           readOnly: true
+    PriceTable:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start_junction:
+          type: integer
+        end_junction:
+          type: integer
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - end_junction
+      - id
+      - price
+      - start_junction
+      - updated
     Ride:
       type: object
       properties:
@@ -729,6 +762,12 @@ components:
           $ref: '#/components/schemas/Junction'
         end_junction:
           $ref: '#/components/schemas/Junction'
+        no_of_passengers:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        two_way:
+          type: boolean
         price:
           type: string
           format: decimal

@@ -192,8 +192,8 @@ def get_price_from_table(start_junction, end_junction):
 
 
 @permission_classes([IsAuthenticated])
-@api_view(['GET'])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
+@api_view(['GET'])
 def rideSummary(request, ride_id):
     user = request.user
 
@@ -206,16 +206,15 @@ def rideSummary(request, ride_id):
 
 
 
+@extend_schema(request = JunctionSerializer, responses = JunctionSerializer)
 @api_view(['GET'])
-@extend_schema(request = JunctionSerializer, responses = JunctionSerializer
-)
 def junctionList(request):
     junctions = Junction.objects.all()
     serializer = JunctionSerializer(junctions, many=True)
     return Response(serializer.data)
 
 
-@extend_schema(request = JunctionSerializer, responses = JunctionSerializer)
+@extend_schema(request = PriceTableSerializer, responses = PriceTableSerializer)
 @api_view(['GET'])
 def priceTableList(request):
     prices = PriceTable.objects.all()
