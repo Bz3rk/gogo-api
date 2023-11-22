@@ -140,39 +140,42 @@ def bookingReceipt(request, user_id):
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
 def bookRide(request):
-    start_junction_name = request.data.get('start_junction')
-    end_junction_name = request.data.get('end_junction')
-    two_way = request.data.get('two_way', False)
-    no_of_passengers = int(request.data.get('no_of_passengers', 1))
+    if request.user.is_authenticated:
+        start_junction_name = request.data.get('start_junction')
+        end_junction_name = request.data.get('end_junction')
+        two_way = request.data.get('two_way', False)
+        no_of_passengers = int(request.data.get('no_of_passengers', 1))
 
-    User = get_user_model()
-    user = request.user
+        User = get_user_model()
+        user = request.user
 
-    try:
-        start_junction = Junction.objects.get(name=start_junction_name)
-        end_junction = Junction.objects.get(name=end_junction_name)
-    except Junction.DoesNotExist:
-        return Response({'error': 'Invalid junction names'}, status=status.HTTP_400_BAD_REQUEST)
-   
-    # Fetching the price from the PriceTable function and multiplies the no of passengers availiable 
-    price = get_price_from_table(start_junction, end_junction)
+        try:
+            start_junction = Junction.objects.get(name=start_junction_name)
+            end_junction = Junction.objects.get(name=end_junction_name)
+        except Junction.DoesNotExist:
+            return Response({'error': 'Invalid junction names'}, status=status.HTTP_400_BAD_REQUEST)
     
+        # Fetching the price from the PriceTable function and multiplies the no of passengers availiable 
+        price = get_price_from_table(start_junction, end_junction)
+        
 
-    if price is not None:   
-        #  checks if the ride is two way or not
-        pass_price = price * no_of_passengers
-        if two_way is True:
-            final_price = pass_price * 2
+        if price is not None:   
+            #  checks if the ride is two way or not
+            pass_price = price * no_of_passengers
+            if two_way is True:
+                final_price = pass_price * 2
+            else:
+                final_price = pass_price
+            ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction,  no_of_passengers=no_of_passengers, two_way=two_way, price=final_price,)
+            ride.save()
+
+            serializer = RideSerializer(ride)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            final_price = pass_price
-        ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction,  no_of_passengers=no_of_passengers, two_way=two_way, price=final_price,)
-        ride.save()
-
-        serializer = RideSerializer(ride)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            final_price = price
+            return Response({'error': 'Price information not available'}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        final_price = price
-        return Response({'error': 'Price information not available'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 #function to determine the price from the price table
 def get_price_from_table(start_junction, end_junction):
