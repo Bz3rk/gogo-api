@@ -144,6 +144,8 @@ def bookRide(request):
     end_junction_name = request.data.get('end_junction')
     two_way = request.data.get('two_way', False)
     no_of_passengers = int(request.data.get('no_of_passengers', 1))
+
+    User = get_user_model()
     user = request.user
 
     try:
