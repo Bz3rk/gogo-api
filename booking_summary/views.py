@@ -138,7 +138,7 @@ def bookingReceipt(request, user_id):
 
 
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication, BasicAuthentication])
+@authentication_classes([TokenAuthentication])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
 def bookRide(request):
