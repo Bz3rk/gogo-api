@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import BookingSummary, Junction, Ride, PriceTable
-from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer
+from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer, UserSerializer, UserRideSerializer
 #from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from drf_spectacular.utils import extend_schema
@@ -230,14 +230,16 @@ def priceTableList(request):
 
 
 
+@permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def userRideList(request):
     if request.user.is_authenticated:
         user = request.user
         try:
             rides = Ride.objects.filter(user=user)
-            serializer = RideSerializer(rides, many=True)
-            return Response(serializer.data)
+            rideserializer = UserRideSerializer(rides, many=True)
+            userSerializer = UserSerializer(user)
+            return Response({'user': userSerializer.data, 'history' : rideserializer.data})
         except Ride.DoesNotExist:
             return Response({'error': 'No ride found for this user'}, status=status.HTTP_404_NOT_FOUND)
     else:
