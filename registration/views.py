@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -21,6 +21,7 @@ from .models import CustomUser
 
 
 # Create your views here.
+@permission_classes([AllowAny])
 @extend_schema(request = DataSerializer, responses = DataSerializer)
 @api_view([ 'POST'])
 def ClientLogin(request):
