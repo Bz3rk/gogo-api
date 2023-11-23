@@ -5,10 +5,11 @@ from django.shortcuts import get_object_or_404
 from .models import BookingSummary, Junction, Ride, PriceTable
 from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer
 #from rest_framework import generics
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from drf_spectacular.utils import extend_schema
 
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 #from .permissions import IsAuthorToViewReceipt
 
 from geopy.distance import geodesic
@@ -17,7 +18,7 @@ from geopy.distance import geodesic
 
 # CustomUser = settings.AUTH_USER_MODEL
 
-from django.contrib.auth import get_user_model  # Add this import
+from django.contrib.auth import get_user_model 
 
 User = get_user_model() 
 
@@ -137,6 +138,7 @@ def bookingReceipt(request, user_id):
 
 
 @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
 def bookRide(request):
@@ -195,7 +197,7 @@ def get_price_from_table(start_junction, end_junction):
 
 
 
-
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['GET'])
