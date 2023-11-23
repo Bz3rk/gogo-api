@@ -227,3 +227,18 @@ def priceTableList(request):
     prices = PriceTable.objects.all()
     serializer = PriceTableSerializer(prices, many=True)
     return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+def userRideList(request):
+    if request.user.is_authenticated:
+        user = request.user
+        try:
+            rides = Ride.objects.filter(user=user)
+            serializer = RideSerializer(rides, many=True)
+            return Response(serializer.data)
+        except Ride.DoesNotExist:
+            return Response({'error': 'No ride found for this user'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
