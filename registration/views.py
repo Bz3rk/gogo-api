@@ -21,7 +21,6 @@ from .models import CustomUser
 
 
 # Create your views here.
-@permission_classes([AllowAny])
 @extend_schema(request = DataSerializer, responses = DataSerializer)
 @api_view([ 'POST'])
 def ClientLogin(request):
