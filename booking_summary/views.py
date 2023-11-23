@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from drf_spectacular.utils import extend_schema
 
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
 #from .permissions import IsAuthorToViewReceipt
 
 from geopy.distance import geodesic
@@ -138,7 +138,7 @@ def bookingReceipt(request, user_id):
 
 
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
 def bookRide(request):
@@ -197,7 +197,7 @@ def get_price_from_table(start_junction, end_junction):
 
 
 
-@authentication_classes([TokenAuthentication])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['GET'])
