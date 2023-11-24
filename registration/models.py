@@ -8,6 +8,9 @@ from .managers import CustomUserManager
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
+    is_driver = models.BooleanField (default=False, help_text=_("Designates whether the user is a driver."))
+    phone_no = models.CharField(max_length=150, blank = True, null = True)
+    
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

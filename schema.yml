@@ -41,8 +41,7 @@ paths:
               $ref: '#/components/schemas/Ride'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -63,8 +62,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -90,8 +88,7 @@ paths:
               $ref: '#/components/schemas/BookingSummary'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -117,8 +114,7 @@ paths:
               $ref: '#/components/schemas/Data'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -145,8 +141,7 @@ paths:
               $ref: '#/components/schemas/ClientRegistration'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -173,8 +168,7 @@ paths:
               $ref: '#/components/schemas/Data'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -192,24 +186,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DriverRegistration'
+              $ref: '#/components/schemas/DriverUpdate'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/DriverRegistration'
+              $ref: '#/components/schemas/DriverUpdate'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/DriverRegistration'
-        required: true
+              $ref: '#/components/schemas/DriverUpdate'
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+      - tokenAuth: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DriverRegistration'
+                $ref: '#/components/schemas/DriverUpdate'
           description: ''
   /api/junction-list/:
     get:
@@ -217,8 +208,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -233,8 +223,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -255,8 +244,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -387,8 +375,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -416,8 +403,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -440,8 +426,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -472,8 +457,7 @@ paths:
               $ref: '#/components/schemas/Testimonials'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -503,8 +487,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTestimonials'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -523,8 +506,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -546,14 +528,28 @@ paths:
               $ref: '#/components/schemas/Testimonials'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Testimonials'
+          description: ''
+  /api/user-ride-list:
+    get:
+      operationId: api_user_ride_list_retrieve
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRide'
           description: ''
 components:
   schemas:
@@ -573,8 +569,6 @@ components:
           type: boolean
         no_of_passengers:
           type: integer
-          maximum: 2147483647
-          minimum: -2147483648
         pickup_long:
           type: number
           format: double
@@ -658,32 +652,18 @@ components:
       - email
       - id
       - password
-    DriverRegistration:
+    DriverUpdate:
       type: object
       properties:
-        id:
-          type: integer
+        is_driver:
+          type: boolean
           readOnly: true
-        password:
+        phone_no:
           type: string
-          writeOnly: true
-        first_name:
-          type: string
-          maxLength: 30
-        last_name:
-          type: string
-          maxLength: 30
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
+          nullable: true
+          maxLength: 150
       required:
-      - email
-      - first_name
-      - id
-      - last_name
-      - password
+      - is_driver
     Junction:
       type: object
       properties:
@@ -764,8 +744,6 @@ components:
           $ref: '#/components/schemas/Junction'
         no_of_passengers:
           type: integer
-          maximum: 2147483647
-          minimum: -2147483648
         two_way:
           type: boolean
         price:
@@ -817,14 +795,35 @@ components:
           maxLength: 150
       required:
       - id
+    UserRide:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start_junction:
+          $ref: '#/components/schemas/Junction'
+        end_junction:
+          $ref: '#/components/schemas/Junction'
+        no_of_passengers:
+          type: integer
+        two_way:
+          type: boolean
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - end_junction
+      - id
+      - price
+      - start_junction
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
     tokenAuth:
       type: apiKey
       in: header
