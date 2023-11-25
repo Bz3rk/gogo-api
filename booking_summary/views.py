@@ -96,13 +96,6 @@ def createBooking(request):
 
     return Response({'message': 'Method not allowed. Use POST to create a booking.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
- 
-
-
-
-
-
-
 
 
 
