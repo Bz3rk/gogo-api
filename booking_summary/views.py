@@ -1,22 +1,25 @@
+from django.db import transaction
+from .utils import send_sms
+from twilio.rest import Client
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import BookingSummary, Junction, Ride, PriceTable
-from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer, UserSerializer, UserRideSerializer
+from .models import BookingSummary, Junction, Ride, PriceTable, Car
+from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer, UserSerializer, UserRideSerializer, CarSerializer
 #from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from drf_spectacular.utils import extend_schema
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication
-#from .permissions import IsAuthorToViewReceipt
-
+from .permissions import IsAdminOrReadOnly
 from geopy.distance import geodesic
 
 # from django.conf import settings
 
 # CustomUser = settings.AUTH_USER_MODEL
+
 
 from django.contrib.auth import get_user_model 
 
@@ -137,10 +140,10 @@ def bookingReceipt(request, user_id):
 
 
 
-@permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication, BasicAuthentication])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def bookRide(request):
     if request.user.is_authenticated:
         start_junction_name = request.data.get('start_junction')
@@ -168,11 +171,49 @@ def bookRide(request):
                 final_price = pass_price * 2
             else:
                 final_price = pass_price
+
+            avaliable_driver = Car.objects.filter(is_active=True)
+            # print (avaliable_driver)
+            
+            if not avaliable_driver:
+                return Response({'message': 'No availiable rides'}, status=status.HTTP_404_NOT_FOUND)
+            
+            selected_driver = avaliable_driver.first()
+            # print(selected_driver)
+
+            driver = selected_driver.driver 
+            # driver = User.objects.get(car=selected_driver)
+            driver_no = driver.phone_no
+            print (driver)
+            # print(driver_no)
+            driver_serializer = UserSerializer(driver)
+
+
+            twilio_message = f"Ride booked! Pickup: {start_junction_name}, Dropoff: {end_junction_name}"
+            twilio_phone_number = driver_no  # Use the driver's phone number
+
+            if send_sms(twilio_phone_number, twilio_message):
+                print("Twilio SMS notification sent successfully")
+            else:
+                return Response({"Error":"Driver notification not successful"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            
+            selected_driver.is_active = False
+            selected_driver.save()
+
+
+            response_data = {
+        'message': 'Booking successful',
+        'driver_details': driver_serializer.data,
+        'car_name': selected_driver.car_model
+        }
+
+
             ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction,  no_of_passengers=no_of_passengers, two_way=two_way, price=final_price,)
             ride.save()
 
             serializer = RideSerializer(ride)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"Ride-info":serializer.data, "Driver-info":response_data}, status=status.HTTP_201_CREATED)
         else:
             final_price = price
             return Response({'error': 'Price information not available'}, status=status.HTTP_400_BAD_REQUEST)
@@ -197,10 +238,10 @@ def get_price_from_table(start_junction, end_junction):
 
 
 
-@authentication_classes([TokenAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def rideSummary(request, ride_id):
     user = request.user
 
@@ -230,8 +271,9 @@ def priceTableList(request):
 
 
 
-@permission_classes([IsAuthenticated])
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def userRideList(request):
     if request.user.is_authenticated:
         user = request.user
@@ -244,3 +286,29 @@ def userRideList(request):
             return Response({'error': 'No ride found for this user'}, status=status.HTTP_404_NOT_FOUND)
     else:
         return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@extend_schema(request = CarSerializer, responses = CarSerializer)
+@api_view(['POST'])
+@permission_classes([IsAdminOrReadOnly, IsAuthenticated])
+def driverCars(request):
+    car_model = request.data.get('car_model')
+    license_plate = request.data.get('license_plate')
+    phone = request.data.get('phone')
+    print(phone)
+    print (request.data)
+
+    try:
+        # phone_no = User.objects.filter(phone_no=driver_no).first()
+        driver = User.objects.get(phone_no=phone)
+    except User.DoesNotExist:
+            return Response({'error': 'Driver with this phone no does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if driver.is_driver:
+        car_detail = Car(car_model=car_model, license_plate=license_plate, driver=driver)
+        car_detail.save()
+
+        serializer = CarSerializer(car_detail)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'Error': 'User is not a driver'}, status=status.HTTP_400_BAD_REQUEST)

@@ -4,6 +4,17 @@ info:
   version: 1.0.0
   description: Your API Description
 paths:
+  /api/assign-car:
+    post:
+      operationId: api_assign_car_create
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
   /api/auth/:
     get:
       operationId: api_auth_retrieve
@@ -549,7 +560,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserRide'
+                $ref: '#/components/schemas/Car'
           description: ''
 components:
   schemas:
@@ -605,6 +616,25 @@ components:
       - two_way
       - user
       - user_location
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        car_model:
+          type: string
+          maxLength: 300
+        license_plate:
+          type: string
+          maxLength: 300
+        driver:
+          type: integer
+      required:
+      - car_model
+      - driver
+      - id
+      - license_plate
     ClientRegistration:
       type: object
       properties:
@@ -646,6 +676,9 @@ components:
           type: string
           writeOnly: true
         first_name:
+          type: string
+          maxLength: 150
+        last_name:
           type: string
           maxLength: 150
       required:
@@ -795,34 +828,6 @@ components:
           maxLength: 150
       required:
       - id
-    UserRide:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        start_junction:
-          $ref: '#/components/schemas/Junction'
-        end_junction:
-          $ref: '#/components/schemas/Junction'
-        no_of_passengers:
-          type: integer
-        two_way:
-          type: boolean
-        price:
-          type: string
-          format: decimal
-          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - end_junction
-      - id
-      - price
-      - start_junction
   securitySchemes:
     tokenAuth:
       type: apiKey
