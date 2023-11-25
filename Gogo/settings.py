@@ -34,6 +34,13 @@ ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com', '127.0.0.1', 'localhost']
 AUTH_USER_MODEL = 'registration.CustomUser'
 # Application definition
 
+
+TWILIO_ACCOUNT_SID = 'AC5a34cbe0c6bfe10f325476b624563da9'
+TWILIO_AUTH_TOKEN = '1c27b467e962c8a88743f8d3b426117c'
+TWILIO_PHONE_NUMBER = '+12677992249'
+
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'whitenoise.runserver_nostatic',
@@ -58,9 +65,9 @@ INSTALLED_APPS = [
 #rest framework defaults
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.TokenAuthentication',
+    # ],
     # other settings...
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }

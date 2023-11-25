@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BookingSummary, Junction, Ride, PriceTable
+from .models import BookingSummary, Junction, Ride, PriceTable, Car
 
 # from django.conf import settings
 
@@ -53,3 +53,9 @@ class UserRideSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ride
         fields = ['id', 'start_junction', 'end_junction', 'no_of_passengers', 'two_way', 'price', 'created']
+
+
+class CarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = ['id', 'car_model', 'license_plate','driver']

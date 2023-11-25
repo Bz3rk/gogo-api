@@ -66,3 +66,19 @@ class Ride(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+
+class Car(models.Model):
+    driver = models.ForeignKey (CustomUser, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+    license_plate = models.CharField(max_length=300)
+    car_model = models.CharField(max_length=300)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__ (self):
+        return self.car_model
+    
+
+    class Meta:
+        ordering = ['-created']
+
