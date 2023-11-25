@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
-from .serializers import DataSerializer, ClientRegistrationSerializer, DriverRegistrationSerializer
+from .serializers import DataSerializer, ClientRegistrationSerializer, DriverUpdateSerializer
 
 from drf_spectacular.utils import extend_schema
 from .models import CustomUser
@@ -63,20 +63,36 @@ def ClientRegister(request):
     return Response({})
 
 
-@extend_schema(request = DriverRegistrationSerializer, responses = DriverRegistrationSerializer)
+@extend_schema(request = DriverUpdateSerializer, responses = DriverUpdateSerializer)
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def DriverRegister(request):
     if request.method == 'POST':
-        serializer = DriverRegistrationSerializer(data = request.data, many=False)
-        if serializer.is_valid():            
-            password = request.data['password']
-            
-            user = serializer.save( password=password)
+        user = request.user
+        phone_no = request.data.get('phone_no')
+        serializer = DriverUpdateSerializer(instance=user, data=request.data)
+        serializer_user = DataSerializer(instance=user)
 
-            token = Token.objects.create(user=user)
-            return Response({"userData": serializer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
-        return Response({'Errors': serializer.errors})
+        if serializer.is_valid():
+            serializer.save( phone_no=phone_no, is_driver=True)
+            return Response({"userdata": serializer_user.data, "UpdateduserData": serializer.data}, status=status.HTTP_200_OK)
+        return Response({'Errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     return Response({})
+
+
+# @api_view(['POST'])
+# def DriverRegister(request):
+#     if request.method == 'POST':
+#         serializer = DriverRegistrationSerializer(data = request.data, many=False)
+#         if serializer.is_valid():            
+#             password = request.data['password']
+            
+#             user = serializer.save( password=password)
+
+#             token = Token.objects.create(user=user)
+#             return Response({"userData": serializer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
+#         return Response({'Errors': serializer.errors})
+#     return Response({})
 
 @api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
