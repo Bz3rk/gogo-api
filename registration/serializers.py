@@ -6,7 +6,7 @@ class DataSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'password', 'first_name', 'last_name']
+        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'is_driver', 'is_active', 'is_superuser']
 
 class ClientRegistrationSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=30)

@@ -20,31 +20,55 @@ from .models import CustomUser
 
 
 
+
 # Create your views here.
 @extend_schema(request = DataSerializer, responses = DataSerializer)
 @api_view([ 'POST'])
 def ClientLogin(request):
     if request.method == 'POST':
-        user = get_object_or_404(CustomUser, email=request.data['email'])
-        if not user.check_password(request.data['password']):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
             return Response({"message": "Invalid credentials..."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.check_password(password):
+            return Response({"message": "Invalid credentials..."}, status=status.HTTP_400_BAD_REQUEST)
+            
         token, created = Token.objects.get_or_create(user=user)
         serializer = DataSerializer(instance=user)
+        # print (email)
+        # print(password)
         return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
     return Response({})
 
 
-@extend_schema(request = DataSerializer, responses = DataSerializer)
-@api_view(['POST'])
-def DriverLogin(request):
-    if request.method == 'POST':
-        user = get_object_or_404(CustomUser, email=request.data['email'])
-        if not user.check_password(request.data['password']):
-           return Response({"message": "Invalid credentials...."}, status=status.HTTP_400_BAD_REQUEST)
-        token, created = Token.objects.get_or_create(user=user)
+@extend_schema(responses = DataSerializer)
+@api_view(['GET'])
+def Driverauth(request):
+    if request.method == 'GET':
+        user = request.user
+
+        is_driver = getattr(user, 'is_driver', False)
         serializer = DataSerializer(instance=user)
-        return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
-    return Response({})
+        if user.is_driver == False:
+            return Response({"message":"user not a driver"}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response({'userData': serializer.data}, status=status.HTTP_200_OK)
+
+
+
+# @extend_schema(request = DataSerializer, responses = DataSerializer)
+# @api_view(['POST'])
+# def DriverLogin(request):
+#     if request.method == 'POST':
+#         user = get_object_or_404(CustomUser, email=request.data['email'])
+#         if not user.check_password(request.data['password']):
+#            return Response({"message": "Invalid credentials...."}, status=status.HTTP_400_BAD_REQUEST)
+#         token, created = Token.objects.get_or_create(user=user)
+#         serializer = DataSerializer(instance=user)
+#         return Response({'userData': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
+#     return Response({})
 
 
 @extend_schema(request = ClientRegistrationSerializer, responses = ClientRegistrationSerializer)

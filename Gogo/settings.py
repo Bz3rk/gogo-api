@@ -13,6 +13,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+}
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,15 +37,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp'
-# SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = os.environ.get('DEBUG')
+# DEBUG = False
+DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com', '127.0.0.1', 'localhost']
-# ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
+# ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 
 AUTH_USER_MODEL = 'registration.CustomUser'
 # Application definition
@@ -69,6 +85,7 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.TokenAuthentication',
     # ],
     # other settings...
+    'EXCEPTION_HANDLER': 'registration.exceptions.custom_exception_handler',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
@@ -121,15 +138,15 @@ WSGI_APPLICATION = 'Gogo.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'gogodatabase',
-        # 'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a',
-        # # 'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a.oregon-postgres.render.com',
-        # 'USER': 'gogouser',
-        # 'PASSWORD': '2KemeBHLfxNG0jP6GVgPgpTN9ua6Dx6M',
-        # 'PORT': '5432',
-        'ENGINE': 'django.db.backends.sqlite3', 
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'gogodatabase',
+        'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a',
+        # 'HOST': 'dpg-ckbdqhfs0fgc73f93epg-a.oregon-postgres.render.com',
+        'USER': 'gogouser',
+        'PASSWORD': '2KemeBHLfxNG0jP6GVgPgpTN9ua6Dx6M',
+        'PORT': '5432',
+        # 'ENGINE': 'django.db.backends.sqlite3', 
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     } 
 }
 
