@@ -133,9 +133,9 @@ def bookingReceipt(request, user_id):
 
 
 
-@authentication_classes([TokenAuthentication, BasicAuthentication])
 @extend_schema(request = RideSerializer, responses = RideSerializer)
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def bookRide(request):
     if request.user.is_authenticated:
@@ -267,6 +267,7 @@ def priceTableList(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 def userRideList(request):
     if request.user.is_authenticated:
         user = request.user
@@ -284,6 +285,7 @@ def userRideList(request):
 @extend_schema(request = CarSerializer, responses = CarSerializer)
 @api_view(['POST'])
 @permission_classes([IsAdminOrReadOnly, IsAuthenticated])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 def driverCars(request):
     car_model = request.data.get('car_model')
     license_plate = request.data.get('license_plate')

@@ -23,4 +23,4 @@ pip install twilio
 python manage.py spectacular --file schema.yml
 python manage.py makemigrations
 python manage.py migrate
-# python manage.py collectstatic
+python manage.py collectstatic
