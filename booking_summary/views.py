@@ -198,7 +198,8 @@ def bookRide(request):
             response_data = {
         'message': 'Booking successful',
         'driver_details': driver_serializer.data,
-        'car_name': selected_driver.car_model
+        'car_name': selected_driver.car_model,
+        'license_plate': selected_driver.license_plate
         }
 
 

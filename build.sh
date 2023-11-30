@@ -21,6 +21,6 @@ pip install whitenoise
 pip install django-cors-headers
 pip install twilio
 python manage.py spectacular --file schema.yml
-python manage.py collectstatic
+yes | python manage.py collectstatic
 python manage.py makemigrations
 python manage.py migrate
