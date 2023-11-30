@@ -206,7 +206,7 @@ def bookRide(request):
             ride.save()
 
             serializer = RideSerializer(ride)
-            return Response({"Ride-info":serializer.data, "Driver-info":response_data}, status=status.HTTP_201_CREATED)
+            return Response({"rideInfo":serializer.data, "driverInfo":response_data}, status=status.HTTP_201_CREATED)
         else:
             final_price = price
             return Response({'error': 'Price information not available'}, status=status.HTTP_400_BAD_REQUEST)
