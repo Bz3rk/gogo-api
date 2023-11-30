@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import BookingSummary, Junction, Ride, PriceTable, Car
-from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer, UserSerializer, UserRideSerializer, CarSerializer
+from .serializers import BookingSummarySerializer, RideSerializer, PriceTableSerializer, JunctionSerializer, UserSerializer, UserRideSerializer, CarSerializer, DriverSerializer
 #from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from drf_spectacular.utils import extend_schema
@@ -179,7 +179,7 @@ def bookRide(request):
             driver_no = driver.phone_no
             print (driver)
             # print(driver_no)
-            driver_serializer = UserSerializer(driver)
+            driver_serializer = DriverSerializer(driver)
 
 
             twilio_message = f"Ride booked! Pickup: {start_junction_name}, Dropoff: {end_junction_name}"

@@ -38,6 +38,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name']
 
 
+class DriverSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'phone_no']
+
+
 class RideSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     start_junction = JunctionSerializer()

@@ -176,7 +176,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://gogo-rides-test.onrender.com",
     "https://testing-gogo.netlify.app",
-    "http://192.168.0.184:5173"
+    "http://192.168.43.165:5173",
+    "https://gogo-main-client.vercel.app"
 ]
 
 
