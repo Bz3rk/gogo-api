@@ -203,7 +203,8 @@ def bookRide(request):
         }
 
 
-            ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction,  no_of_passengers=no_of_passengers, two_way=two_way, price=final_price,)
+            ride = Ride(user=user, start_junction=start_junction, end_junction=end_junction, 
+                         no_of_passengers=no_of_passengers, two_way=two_way, price=final_price, driver=driver)
             ride.save()
 
             serializer = RideSerializer(ride)
