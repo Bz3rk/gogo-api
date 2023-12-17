@@ -33,7 +33,6 @@ pytz==2023.3.post1
 PyYAML==6.0.1
 referencing==0.8.9
 requests==2.31.0
-rpds-py==0.12.0
 sqlparse==0.4.4
 twilio==8.10.2
 typing_extensions==4.8.0
