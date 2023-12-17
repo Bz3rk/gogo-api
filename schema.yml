@@ -9,12 +9,28 @@ paths:
       operationId: api_assign_car_create
       tags:
       - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Car'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Car'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Car'
+        required: true
       security:
       - tokenAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+          description: ''
   /api/auth/:
     get:
       operationId: api_auth_retrieve
@@ -53,7 +69,7 @@ paths:
         required: true
       security:
       - tokenAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -73,7 +89,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -99,7 +116,8 @@ paths:
               $ref: '#/components/schemas/BookingSummary'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -125,7 +143,8 @@ paths:
               $ref: '#/components/schemas/Data'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -152,7 +171,8 @@ paths:
               $ref: '#/components/schemas/ClientRegistration'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -161,25 +181,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ClientRegistration'
           description: ''
-  /api/driver-login/:
-    post:
-      operationId: api_driver_login_create
+  /api/driver-auth/:
+    get:
+      operationId: api_driver_auth_retrieve
       tags:
       - api
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Data'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Data'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Data'
-        required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -205,7 +214,8 @@ paths:
             schema:
               $ref: '#/components/schemas/DriverUpdate'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -219,7 +229,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -234,7 +245,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -256,7 +268,7 @@ paths:
       - api
       security:
       - tokenAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -386,7 +398,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -414,7 +427,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       - {}
       responses:
         '200':
@@ -437,7 +451,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -468,7 +483,8 @@ paths:
               $ref: '#/components/schemas/Testimonials'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -498,7 +514,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTestimonials'
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '200':
           content:
@@ -517,7 +534,8 @@ paths:
       tags:
       - api
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '204':
           description: No response body
@@ -539,7 +557,8 @@ paths:
               $ref: '#/components/schemas/Testimonials'
         required: true
       security:
-      - tokenAuth: []
+      - cookieAuth: []
+      - basicAuth: []
       responses:
         '201':
           content:
@@ -554,14 +573,10 @@ paths:
       - api
       security:
       - tokenAuth: []
-      - {}
+      - basicAuth: []
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Car'
-          description: ''
+          description: No response body
 components:
   schemas:
     BookingSummary:
@@ -580,6 +595,8 @@ components:
           type: boolean
         no_of_passengers:
           type: integer
+          maximum: 2147483647
+          minimum: -2147483648
         pickup_long:
           type: number
           format: double
@@ -681,6 +698,19 @@ components:
         last_name:
           type: string
           maxLength: 150
+        is_driver:
+          type: boolean
+          description: Designates whether the user is a driver.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
       required:
       - email
       - id
@@ -777,6 +807,8 @@ components:
           $ref: '#/components/schemas/Junction'
         no_of_passengers:
           type: integer
+          maximum: 2147483647
+          minimum: -2147483648
         two_way:
           type: boolean
         price:
@@ -829,6 +861,13 @@ components:
       required:
       - id
   securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
     tokenAuth:
       type: apiKey
       in: header
