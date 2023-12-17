@@ -1,3 +1,6 @@
-space
+*.log
+*.pot
+*.pyc
 __pycache__/
+space
 *.sqlite3
