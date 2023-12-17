@@ -31,7 +31,7 @@ psycopg2-binary==2.9.7
 PyJWT==2.8.0
 pytz==2023.3.post1
 PyYAML==6.0.1
-referencing==0.30.2
+referencing==0.8.9
 requests==2.31.0
 rpds-py==0.12.0
 sqlparse==0.4.4
@@ -42,3 +42,4 @@ uritemplate==4.1.1
 urllib3==2.0.5
 whitenoise==6.5.0
 yarl==1.9.3
+dj-database-url == 2.1.0
