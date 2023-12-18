@@ -172,12 +172,15 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = False
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "https://gogo-rides-test.onrender.com",
-    "https://testing-gogo.netlify.app",
-    "http://192.168.0.184:5173"
-]
+CORS_ALLOWED_ORIGINS = [os.environ.get('CORS_ALLOWED_ORIGINS')].split(" ")
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "https://gogo-rides-test.onrender.com",
+#     "https://testing-gogo.netlify.app",
+#     "http://192.168.0.184:5173"
+    
+# ]
 
 
 CORS_ALLOWED_METHODS = [
