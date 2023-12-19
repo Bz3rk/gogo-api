@@ -56,7 +56,7 @@ def Driverauth(request):
         serializer = DataSerializer(instance=user)
         if user.is_driver == False:
             return Response({"message":"user not a driver"}, status=status.HTTP_401_UNAUTHORIZED)
-    return Response({'userData': serializer.data}, status=status.HTTP_200_OK)
+    return Response({'userData': serializer.data, 'success': True}, status=status.HTTP_200_OK)
 
 
 
