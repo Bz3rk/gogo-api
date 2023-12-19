@@ -38,14 +38,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp'
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'django-insecure-q4g^7=r2*nne*$-x4d74q=-^ut5@x(i-1^7*icxo7fx9r7#qpp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
+# DEBUG = True
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
 # ALLOWED_HOSTS = ['gogo-api-kpu0.onrender.com', '127.0.0.1', 'localhost']
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
+# ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
+ENV_HOST = os.environ.get('ALLOWED_HOSTS')
+if ENV_HOST :
+    ENV_HOST.split(" ")
+ALLOWED_HOSTS = ENV_HOST or ['gogo-api-kpu0.onrender.com', '127.0.0.1', 'localhost']
+
 
 AUTH_USER_MODEL = 'registration.CustomUser'
 # Application definition
@@ -172,7 +177,15 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = False
 
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS').split(" ")
+
+ENV_CORS = os.environ.get('CORS_ALLOWED_ORIGINS')
+if ENV_CORS :
+    ENV_CORS.split(" ")
+CORS_ALLOWED_ORIGINS = ENV_CORS or [    "http://localhost:5173",
+    "https://gogo-rides-test.onrender.com",
+    "https://testing-gogo.netlify.app",
+    "http://192.168.0.184:5173"]
+
 
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:5173",

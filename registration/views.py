@@ -46,6 +46,8 @@ def ClientLogin(request):
 
 @extend_schema(responses = DataSerializer)
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def Driverauth(request):
     if request.method == 'GET':
         user = request.user
