@@ -14,7 +14,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication
 from .permissions import IsAdminOrReadOnly
-from geopy.distance import geodesic
+from rest_framework.pagination import PageNumberPagination
+# from geopy.distance import geodesic
 
 # from django.conf import settings
 
@@ -275,9 +276,12 @@ def userRideList(request):
         user = request.user
         try:
             rides = Ride.objects.filter(user=user)
-            rideserializer = UserRideSerializer(rides, many=True)
+            paginator = PageNumberPagination()
+            paginator.page_size = 1
+            page = paginator.paginate_queryset(rides, request)
+            rideserializer = UserRideSerializer(page, many=True)
             userSerializer = UserSerializer(user)
-            return Response({'user': userSerializer.data, 'history' : rideserializer.data})
+            return paginator.get_paginated_response({'user': userSerializer.data, 'history' : rideserializer.data})
         except Ride.DoesNotExist:
             return Response({'error': 'No ride found for this user'}, status=status.HTTP_404_NOT_FOUND)
     else:
@@ -309,3 +313,17 @@ def driverCars(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response({'Error': 'User is not a driver'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
+def activeCars(request):
+    user = request.user
+    is_active = request.data.get('is_active')
+    car = Car.objects.get(driver=user)
+    print (car)
+    if request.method == 'POST':
+        car.is_active = is_active
+        car.save()
+    return Response({'success': True}, status=status.HTTP_200_OK)

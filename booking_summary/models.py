@@ -71,7 +71,7 @@ class Ride(models.Model):
 
 
 class Car(models.Model):
-    driver = models.ForeignKey (CustomUser, on_delete=models.CASCADE)
+    driver = models.OneToOneField (CustomUser, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     license_plate = models.CharField(max_length=300)
     car_model = models.CharField(max_length=300)
