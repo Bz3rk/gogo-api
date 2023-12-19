@@ -270,7 +270,7 @@ def priceTableList(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-# @authentication_classes([TokenAuthentication, BasicAuthentication])
+@authentication_classes([TokenAuthentication])
 def userRideList(request):
     if request.user.is_authenticated:
         user = request.user
