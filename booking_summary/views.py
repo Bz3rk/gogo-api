@@ -270,14 +270,14 @@ def priceTableList(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication, BasicAuthentication])
+# @authentication_classes([TokenAuthentication, BasicAuthentication])
 def userRideList(request):
     if request.user.is_authenticated:
         user = request.user
         try:
             rides = Ride.objects.filter(user=user)
             paginator = PageNumberPagination()
-            paginator.page_size = 1
+            paginator.page_size = 5
             page = paginator.paginate_queryset(rides, request)
             rideserializer = UserRideSerializer(page, many=True)
             userSerializer = UserSerializer(user)
